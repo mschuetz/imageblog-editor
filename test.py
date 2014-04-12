@@ -41,6 +41,15 @@ class Tests(unittest.TestCase):
             rows = db.execute('select filename from images').fetchall()
             self.assertEqual('foo.jpg', rows[0][0], 'expected foo.jpg in database')
 
+    def test_can_set_description(self):
+        with app.app.app_context():
+            self.touch('foo.jpg')
+            app.insert_new_files()
+            app.set_description('foo.jpg', 'description')
+            db = app.get_db()
+            rows = db.execute('select filename, description from images').fetchall()
+            self.assertEqual('description', rows[0][1], 'expected description')
+
     def test_can_remove_file(self):
         with app.app.app_context():
             self.touch('foo.jpg')

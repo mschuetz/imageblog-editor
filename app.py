@@ -53,12 +53,15 @@ def insert_new_files():
     conn.commit()
 
 @app.route('/images/<filename>/description', methods=['PUT'])
-def save_description(filename):
-    db = get_db()
-    db.execute('update images set description=? where filename=?', [request.form['description'], filename])
-    db.commit()
+def put_description(filename):
+    set_description(filename, request.form['description'])
     # api call
     return '', 200
+
+def set_description(filename, description):
+    db = get_db()
+    db.execute('update images set description=? where filename=?', [description, filename])
+    db.commit()
 
 def remove_missing_files():
     to_remove = []
@@ -70,7 +73,7 @@ def remove_missing_files():
     db.executemany('delete from images where filename=?', to_remove)
 
 @app.route('/submit')
-def submit(form):
+def submit():
     images = list_images()
     # TODO render image list in some ways and submit to blogging service
     return render_template('index.html', message='submitted')

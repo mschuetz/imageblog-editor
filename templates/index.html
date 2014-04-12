@@ -21,21 +21,30 @@
 </div>
 <script src="{{url_for('static', filename='zepto.min.js')}}"></script>
 <script type="application/javascript">
+var timerWaiting = false;
+
 function saveDescription(image, elem) {
-	var description = $('#' + elem)[0].value;
-	$.ajax({
-		type : 'PUT',
-		url : '/images/' + image + '/description',
-		data : {
-			'description' : description
-		},
-		success : function(){
-			
-		},
-		error : function(){
-			
-		}
-	});
+	if (!timerWaiting) {
+		timerWaiting = true;
+		setTimeout(function() {
+			timerWaiting = false;
+			var description = $('#' + elem)[0].value;
+			//console.log('setting description for image ' + image + ' to: ' + description);
+			$.ajax({
+				type : 'PUT',
+				url : '/images/' + image + '/description',
+				data : {
+					'description' : description
+				},
+				success : function() {
+	
+				},
+				error : function() {
+	
+				}
+			});
+		}, 1000);
+	}
 }
 </script>
 </body>

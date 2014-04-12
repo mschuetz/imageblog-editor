@@ -22,7 +22,7 @@
 <script src="{{url_for('static', filename='zepto.min.js')}}"></script>
 <script type="application/javascript">
 function saveDescription(image, elem) {
-	var description = $('#' + elem)[0].innerHTML;
+	var description = $('#' + elem)[0].value;
 	$.ajax({
 		type : 'PUT',
 		url : '/images/' + image + '/description',

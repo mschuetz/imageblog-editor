@@ -3,20 +3,40 @@
 	<head>
 		<meta charset="utf-8">
 	</head>
-
-	<body>
-		<div>
-			<header>
-				<h1>HTML</h1>
-			</header>
-<ul>
-{% for image in images %}
-<li>
-	<img src="/images/{{ image.filename }}">
-	{{ image.description }}
-</li>
-{% endfor %}
-</ul>
-		</div>
-	</body>
+	<link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
+<body>
+<div>
+	<ul>
+	{% for image in images %}
+	<li>
+		<img src="/images/{{ image.filename }}">
+		<textarea id="description{{loop.index}}" name="description"
+		 onchange="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
+		 onpaste="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
+		 onkeyup="saveDescription('{{ image.filename }}', 'description{{loop.index}}')">{{ image.description }}</textarea>
+	</li>
+	{% endfor %}
+	</ul>
+	<a class="btn btn-primary" href="/preview">Preview</a>
+</div>
+<script src="{{url_for('static', filename='zepto.min.js')}}"></script>
+<script type="application/javascript">
+function saveDescription(image, elem) {
+	var description = $('#' + elem)[0].innerHTML;
+	$.ajax({
+		type : 'PUT',
+		url : '/images/' + image + '/description',
+		data : {
+			'description' : description
+		},
+		success : function(){
+			
+		},
+		error : function(){
+			
+		}
+	});
+}
+</script>
+</body>
 </html>

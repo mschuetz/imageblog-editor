@@ -5,19 +5,25 @@
 	</head>
 	<link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
 <body>
-<div>
-	<ul>
+<div class="container">
+<header class="page-header">
+<h1>Image Blog Editor</h1>
+</header>
+<ul class="media-list">
 	{% for image in images %}
-	<li>
-		<img src="/images/{{ image.filename }}">
-		<textarea id="description{{loop.index}}" name="description"
-		 onchange="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
-		 onpaste="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
-		 onkeyup="saveDescription('{{ image.filename }}', 'description{{loop.index}}')">{{ image.description }}</textarea>
+	<li class="media">
+		<a class="pull-left" href="#"> <img class="media-object" src="/images/{{ image.filename }}"> </a>
+		<div class="media-body">
+			<h4 class="media-heading">{{ image.filename }}</h4>
+			<textarea id="description{{loop.index}}" name="description" class="form-control" rows="3" placeholder="description"
+			 onchange="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
+			 onpaste="saveDescription('{{ image.filename }}', 'description{{loop.index}}')"
+			 onkeyup="saveDescription('{{ image.filename }}', 'description{{loop.index}}')">{{ image.description }}</textarea>
+		</div>
 	</li>
 	{% endfor %}
-	</ul>
-	<a class="btn btn-primary" href="/preview">Preview</a>
+</ul>
+<a class="btn btn-primary" href="/preview">Preview</a>
 </div>
 <script src="{{url_for('static', filename='zepto.min.js')}}"></script>
 <script type="application/javascript">

@@ -45,7 +45,8 @@ class Tests(unittest.TestCase):
         with app.app.app_context():
             self.touch('foo.jpg')
             app.insert_new_files()
-            
+            self.remove('foo.jpg')
+            app.remove_missing_files()
             db = app.get_db()
             rows = db.execute('select filename from images').fetchall()
-            self.assertEqual('foo.jpg', rows[0][0], 'expected foo.jpg in database')
+            self.assertEqual(0, len(rows), 'expected no images in database')

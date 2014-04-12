@@ -65,12 +65,9 @@ def remove_missing_files():
     db = get_db()
     rows = db.execute('select filename from images')
     for row in rows:
-        if not os.path.exists(IMAGE_DIR, row[0]):
+        if not os.path.exists(os.path.join(IMAGE_DIR, row[0])):
             to_remove.append([row[0]])
-    db.executemany('delete from images where filename=?')
-    # TODO
-    # compare files in database with directory listing and remove missing ones
-    pass
+    db.executemany('delete from images where filename=?', to_remove)
 
 @app.route('/submit')
 def submit(form):

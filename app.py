@@ -1,9 +1,10 @@
-from flask import Flask, send_file, render_template, g
+from flask import Flask, send_file, render_template, g, abort, request
 import os
 import sqlite3
 
-DATABASE = 'images.db'
-        
+IMAGE_DIR = os.getcwd()
+DATABASE = os.path.join(IMAGE_DIR, 'images.db')
+
 app = Flask(__name__)
 
 def get_db():
@@ -25,12 +26,12 @@ def initialize_db():
 
 @app.route("/images/<filename>")
 def serve_file(filename):
-    return send_file(os.path.join(os.getcwd(), filename))
+    return send_file(os.path.join(IMAGE_DIR, filename))
 
 @app.route("/")
 def index():
     insert_new_files()
-    remove_nonexisting_files()
+    remove_missing_files()
     return render_template('index.html', images=list_images())
 
 def is_image(fn):
@@ -46,17 +47,27 @@ def list_images():
 
 def insert_new_files():
     conn = get_db()
-    for fn in os.listdir(os.getcwd()):
+    for fn in os.listdir(IMAGE_DIR):
         if is_image(fn):
             conn.execute("insert or ignore into images values(?, '')", [fn])
     conn.commit()
 
-@app.route('/save')
-def save_description(form):
-    # TODO
-    pass
+@app.route('/images/<filename>/description', methods=['PUT'])
+def save_description(filename):
+    db = get_db()
+    db.execute('update images set description=? where filename=?', [request.form['description'], filename])
+    db.commit()
+    # api call
+    return '', 200
 
-def remove_nonexisting_files():
+def remove_missing_files():
+    to_remove = []
+    db = get_db()
+    rows = db.execute('select filename from images')
+    for row in rows:
+        if not os.path.exists(IMAGE_DIR, row[0]):
+            to_remove.append([row[0]])
+    db.executemany('delete from images where filename=?')
     # TODO
     # compare files in database with directory listing and remove missing ones
     pass

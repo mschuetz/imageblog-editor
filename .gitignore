@@ -3,3 +3,7 @@
 *.db
 .coverage
 venv
+build
+dist
+ibe.egg-info
+

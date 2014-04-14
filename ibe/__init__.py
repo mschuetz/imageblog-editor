@@ -78,6 +78,11 @@ def submit():
     # TODO render image list in some ways and submit to blogging service
     return render_template('index.html', message='submitted')
 
-if __name__ == "__main__":
+def main():
+    import sys
     initialize_db()
-    app.run(debug=True)
+    if len(sys.argv) > 1 and sys.argv[1].lower() == 'debug':
+        print >> sys.stderr, 'starting in debug mode'
+        app.run(debug=True)
+    else:
+        app.run(debug=False)
